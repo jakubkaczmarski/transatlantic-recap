@@ -135,6 +135,11 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
  .ev{flex-basis:150px}
  h1{font-size:30px}
 }
+.listen{margin:-4px 0 24px}.listen .btn svg{width:16px;height:16px}
+.listen .chip{min-height:42px;font-weight:500;font-variant-numeric:tabular-nums}
+.speaking{background:color-mix(in srgb,#fde68a 50%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,#fde68a 50%,transparent);border-radius:4px}
+:root[data-theme=dark] .speaking{background:color-mix(in srgb,#a16207 40%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,#a16207 40%,transparent)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .speaking{background:color-mix(in srgb,#a16207 40%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,#a16207 40%,transparent)}}
 @media(prefers-reduced-motion:reduce){.flip,.lec{transition:none}}
 </style>
 </head>
@@ -213,12 +218,13 @@ function reader(sid){setNav('home');const[L,s]=secOf(sid);if(!L)return home();
  <div class="row" style="padding:14px 10px"><a class="btn" href="#quiz-L${L.n}">Lecture quiz</a><a class="btn ghost" href="#cards-L${L.n}">Flashcards</a></div></div></aside>
  <article><div class="crumb">${orb(L.n,14)}Lecture ${L.n} · ${esc(L.title)} · ${i+1}/${L.sections.length}</div>
  <h2>${esc(s.title)}</h2>
+ ${HAS_TTS?`<div class="row listen"><button class="btn ghost" id="say" aria-label="Listen to this section"></button><button class="chip" id="rate" title="Reading speed" aria-label="Reading speed"></button><button class="btn ghost" id="sayStop" hidden>Stop</button></div>`:''}
  ${x?`<div class="simple"><div class="lab">In simple words</div><p>${esc(x[0])}</p><div class="lab">What it means · why it matters</div><p>${esc(x[1])}</p><div class="hook"><span class="meta">Remember</span><span>${esc(x[2])}</span></div></div>`:''}
  ${i===0?`<div class="viz">${VIZ[L.n]()}</div>`:''}
  <div class="notes-h">From the study guide</div><div class="text">${s.html}</div>
  <div class="row" style="margin-top:32px"><button class="btn" id="go">Quiz me on this section · ${qs.length}</button>${prev?`<a class="btn ghost" href="#${prev.id}">← Previous</a>`:''}${next?`<a class="btn ghost" href="#${next.id}">Next →</a>`:`<a class="btn ghost" href="#quiz-L${L.n}">Lecture quiz →</a>`}</div>
  <div id="qbox"></div>${foot()}</article></div>`;
- bindFoot();$('#tog').onclick=()=>$('#rail').classList.toggle('open');
+ bindFoot();bindListen();$('#tog').onclick=()=>$('#rail').classList.toggle('open');
  $('#go').onclick=()=>{quiz($('#qbox'),qs.map((y,j)=>({x:y,id:qid(sid,j),sid})),{sid,next});$('#qbox').scrollIntoView({behavior:'smooth',block:'start'})};
  window.scrollTo(0,0)}
 
@@ -264,7 +270,44 @@ function exam(){setNav('exam');let drafts={};try{drafts=JSON.parse(localStorage.
  ${D.lectures.map(L=>D.essays[L.n].map((e,i)=>{const id=`e${L.n}-${i}`;return`<div class="quiz" style="max-width:none;margin-top:14px"><div class="crumb">${orb(L.n,14)}Lecture ${L.n} · ${esc(L.title)}</div><p class="qq">${esc(e[0])}</p><textarea data-id="${id}" placeholder="Outline your answer…">${esc(drafts[id]||'')}</textarea><details style="margin-top:12px"><summary class="btn ghost">Reveal key points</summary><ul class="text" style="font-size:16px">${e[1].map(p=>`<li>${esc(p)}</li>`).join('')}</ul></details></div>`}).join('')).join('')}${foot()}`;bindFoot();
  app.oninput=e=>{if(e.target.dataset.id){drafts[e.target.dataset.id]=e.target.value;try{localStorage.setItem('ta-essays',JSON.stringify(drafts))}catch(x){}}}}
 
-function route(){app.oninput=null;const h=location.hash.slice(1)||'home';let m;
+/* Listen: reads the open section aloud with the browser's built-in speech synthesis.
+   Text is spoken sentence-sized chunk by chunk (long utterances get cut off in Chrome);
+   pause = cancel + remember the chunk, so resume works the same in every browser. */
+const HAS_TTS='speechSynthesis' in window&&'SpeechSynthesisUtterance' in window;
+const RATES=[1,1.25,1.5,1.75,0.85];
+const T={st:'idle',q:[],k:0,tok:0,rate:+(localStorage.getItem('ta-rate')||1)||1};
+const IC={play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>',pause:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'};
+let voice=null;
+const pickVoice=()=>{const v=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+ const r=v=>(/natural|premium|enhanced|neural/i.test(v.name)?4:0)+(/google us|samantha|ava|aria|jenny|daniel/i.test(v.name)?2:0)+(/en[-_](US|GB)/i.test(v.lang)?1:0);
+ voice=v.sort((a,b)=>r(b)-r(a))[0]||null};
+if(HAS_TTS){pickVoice();speechSynthesis.addEventListener?.('voiceschanged',pickVoice)}
+function ttsQueue(){const art=document.querySelector('article');if(!art)return[];const q=[];
+ for(const el of art.querySelectorAll('h2,.simple .lab,.simple p,.simple .hook,.notes-h,.text>:not(ul):not(ol),.text li')){
+  const t=el.innerText.replace(/\s+/g,' ').trim();if(!t)continue;
+  let buf='';for(const s of t.match(/[^.!?;]+[.!?;]*["”’)]*\s*/g)||[t]){if(buf&&(buf+s).length>220){q.push({el,t:buf});buf=''}buf+=s}
+  if(buf.trim())q.push({el,t:buf})}
+ return q}
+const mark=el=>{document.querySelectorAll('.speaking').forEach(e=>e.classList.remove('speaking'));if(!el)return;el.classList.add('speaking');
+ const r=el.getBoundingClientRect();if(r.top<80||r.bottom>innerHeight-40)el.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})};
+function ttsSay(){const tok=++T.tok;if(T.k>=T.q.length)return ttsStop();const c=T.q[T.k];mark(c.el);
+ const u=new SpeechSynthesisUtterance(c.t);if(voice)u.voice=voice;u.lang=voice?.lang||'en-US';u.rate=T.rate;
+ u.onend=()=>{if(tok!==T.tok||T.st!=='play')return;T.k++;ttsSay()};
+ u.onerror=e=>{if(tok!==T.tok||e.error==='interrupted'||e.error==='canceled')return;T.k++;ttsSay()};
+ speechSynthesis.speak(u)}
+function ttsStop(){if(!HAS_TTS)return;T.tok++;T.st='idle';T.k=0;T.q=[];speechSynthesis.cancel();mark(null);ttsUI()}
+function ttsUI(){const b=$('#say'),x=$('#sayStop'),r=$('#rate');if(!b)return;
+ b.innerHTML=T.st==='play'?IC.pause+'Pause':IC.play+(T.st==='pause'?'Resume':'Listen');
+ b.setAttribute('aria-label',T.st==='play'?'Pause reading':'Listen to this section');x.hidden=T.st==='idle';r.textContent=T.rate+'×'}
+function bindListen(){const b=$('#say');if(!b)return;ttsUI();
+ b.onclick=()=>{if(T.st==='play'){T.tok++;T.st='pause';speechSynthesis.cancel()}
+  else{if(T.st==='idle'){T.q=ttsQueue();T.k=0}speechSynthesis.cancel();T.st='play';ttsSay()}ttsUI()};
+ $('#sayStop').onclick=ttsStop;
+ $('#rate').onclick=()=>{T.rate=RATES[(RATES.indexOf(T.rate)+1)%RATES.length];try{localStorage.setItem('ta-rate',T.rate)}catch(e){}ttsUI();
+  if(T.st==='play'){T.tok++;speechSynthesis.cancel();ttsSay()}}}
+addEventListener('pagehide',()=>HAS_TTS&&speechSynthesis.cancel());
+
+function route(){app.oninput=null;ttsStop();const h=location.hash.slice(1)||'home';let m;
  if((m=h.match(/^L(\d)$/)))return reader(`L${m[1]}S1`);
  if(/^L\d+S\d+$/.test(h))return reader(h);
  if((m=h.match(/^quiz-L(\d)$/)))return quizPage('lec',+m[1]);
