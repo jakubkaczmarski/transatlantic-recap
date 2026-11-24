@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<script>try{var t=localStorage.getItem('ta-theme')||(document.cookie.match(/(?:^|; )ta_theme=(light|dark)/)||[])[1];if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Transatlantic Relations Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: quiet, precise, minimal — a study tool that gets out of the way.
+   IDEA: a calm studio workspace: monochrome surfaces, pill controls, soft gradient orbs as lecture identity.
+   PICTURE: monochrome per-lecture diagrams; the reading column with an "In simple words" panel and inline quiz.
+   COLOUR and TYPE: white / near-black, neutral greys, pastel orbs only as identity; Inter UI, Newsreader for reading.
+   LAYOUT: slim sticky top bar with segmented tabs; rail + reading column; quiz sits under the section. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0c0c0c);--ink:light-dark(#0a0a0a,#f2f2f2);--mute:light-dark(#6b6b6b,#9a9a9a);--soft:light-dark(#f5f5f4,#171717);--soft2:light-dark(#ececeb,#222);--line:light-dark(#e7e7e5,#262626);--ok:light-dark(#15803d,#4ade80);--bad:light-dark(#b91c1c,#f87171);--btn:light-dark(#0a0a0a,#f2f2f2);--btnink:light-dark(#fff,#0a0a0a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit}button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top>div{max-width:1200px;margin:auto;padding:12px max(4vw,16px);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font-weight:600;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:10px;margin-right:auto}
+.orb{width:22px;height:22px;border-radius:50%;flex:none;background:var(--g);display:inline-block}
+nav{display:flex;gap:2px;background:var(--soft);padding:4px;border-radius:999px;overflow-x:auto;max-width:100%}
+nav a{flex:none;text-decoration:none;padding:7px 14px;border-radius:999px;color:var(--mute);font-weight:500;font-size:14px;min-height:36px;display:flex;align-items:center}
+nav a.on{background:var(--bg);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+main{padding:clamp(28px,4vw,56px) max(4vw,16px) 80px;max-width:1200px;margin:auto}
+h1{font-size:clamp(32px,4.4vw,48px);line-height:1.05;letter-spacing:-.025em;font-weight:600;margin:0 0 12px;text-wrap:balance}
+h2{font-size:clamp(26px,3vw,34px);line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:0 0 16px;text-wrap:balance}
+h3{font-size:17px;font-weight:600;margin:0 0 8px;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:0 0 28px;max-width:60ch;font-size:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:9px 18px;border-radius:999px;border:1px solid var(--btn);background:var(--btn);color:var(--btnink);font-weight:500;text-decoration:none;font-size:14px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--soft)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.lec{display:flex;flex-direction:column;gap:10px;text-decoration:none;background:var(--soft);border-radius:20px;padding:20px;min-height:190px;transition:background .15s}
+.lec:hover{background:var(--soft2)}
+.lec small{color:var(--mute);font-size:13px}
+.lec h3{font-size:16px;margin:0}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}.lec .bar{margin-top:auto}.bar i{display:block;height:100%;background:var(--ink)}
+.meta{font-size:13px;color:var(--mute)}
+.resume{display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid var(--line);border-radius:20px;margin-bottom:28px;text-decoration:none}
+.resume:hover{background:var(--soft)}
+.read{display:grid;grid-template-columns:260px minmax(0,1fr);gap:48px}
+.rail{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 92px);overflow:auto;padding-right:4px}
+.rail a.s{display:flex;gap:10px;text-decoration:none;padding:7px 10px;border-radius:10px;font-size:13.5px;line-height:1.4;color:var(--mute)}
+.rail a.s:hover{background:var(--soft);color:var(--ink)}
+.rail a.s.on{background:var(--soft);color:var(--ink);font-weight:500}
+.st{flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;border:1.5px solid var(--mute)}.st.ok{background:var(--ok);border-color:var(--ok)}.st.mid{background:#f59e0b;border-color:#f59e0b}
+.lsel{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.lsel a{flex:none;text-decoration:none;width:36px;height:36px;display:grid;place-items:center;border-radius:999px;font-size:13px;font-weight:500;color:var(--mute);background:var(--soft)}
+.lsel a.on{background:var(--btn);color:var(--btnink)}
+.crumb{font-size:13px;color:var(--mute);margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.simple{background:var(--soft);border-radius:20px;padding:clamp(18px,2.5vw,26px);margin:0 0 32px;max-width:720px}
+.simple .lab{font-size:12px;font-weight:500;color:var(--mute);margin-bottom:6px}
+.simple p{margin:0 0 16px;font-size:16px;line-height:1.65}
+.simple .hook{display:flex;gap:12px;align-items:baseline;background:var(--bg);border-radius:12px;padding:10px 14px;font-weight:500;font-size:14.5px}
+.text{font-family:Newsreader,Georgia,serif;font-size:18px;line-height:1.65;max-width:68ch}
+.text h4{font-family:Inter,sans-serif;font-size:15px;font-weight:600;margin:26px 0 6px}
+.text ul{padding-left:20px}.text li{margin:4px 0}.text li.li2{margin-left:18px;list-style:circle}
+.text p.num{padding-left:14px;border-left:2px solid var(--line)}
+.text q{quotes:none;font-style:italic}
+.notes-h{font-size:12px;font-weight:500;color:var(--mute);margin:0 0 4px}
+.quiz{margin-top:32px;border:1px solid var(--line);border-radius:24px;padding:clamp(18px,3vw,30px);max-width:720px;background:var(--bg)}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:13px 16px;margin:8px 0;border-radius:14px;border:1px solid var(--line);background:var(--bg);min-height:48px;line-height:1.45;font-size:15px}
+.opt kbd{flex:none;font:500 12px Inter,sans-serif;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-top:1px}
+.opt:hover:not(:disabled){background:var(--soft)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 9%,var(--bg))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--bg))}
+.fb{margin:14px 0;padding:14px 16px;border-radius:14px;background:var(--soft);font-size:14.5px}
+.qhead{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--mute);margin-bottom:8px}
+.qq{font-size:19px;font-weight:500;line-height:1.35;margin:14px 0 10px;letter-spacing:-.01em}
+.score{font-size:clamp(48px,8vw,72px);font-weight:600;letter-spacing:-.04em;line-height:1}
+.viz{border:1px solid var(--line);border-radius:24px;padding:clamp(16px,2.5vw,26px);margin:0 0 32px}
+.viz h4{margin:0 0 14px;font-size:12px;color:var(--mute);font-weight:500}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:8px}
+.box{background:var(--soft);border-radius:16px;padding:14px;font-size:13.5px;line-height:1.45;color:var(--mute)}
+.box b{display:block;font-size:15px;margin-bottom:4px;color:var(--ink);font-weight:600}
+.steps{display:flex;align-items:flex-end;gap:6px;overflow-x:auto;padding-bottom:4px}
+.steps div{flex:1 0 104px;background:var(--soft);border-radius:14px 14px 4px 4px;padding:10px 12px;font-size:12.5px;line-height:1.35;color:var(--mute)}
+.steps div b{display:block;font-size:17px;color:var(--ink);font-weight:600}
+.steps div.hl{background:var(--btn);color:color-mix(in srgb,var(--btnink) 70%,transparent)}.steps div.hl b{color:var(--btnink)}
+.ladder div{display:grid;grid-template-columns:minmax(0,1fr) 44%;gap:12px;align-items:center;margin:8px 0;font-size:14px}
+.ladder i{display:block;height:10px;border-radius:5px;background:var(--ink)}
+.two{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:center}
+.fig svg{width:100%;height:auto;display:block}
+.tl{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 6px}
+.ev{flex:0 0 180px;scroll-snap-align:start;padding-right:14px;position:relative;text-decoration:none}
+.ev:before{content:"";position:absolute;left:0;right:0;top:46px;height:1px;background:var(--line)}
+.ev .y{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.ev .orb{width:14px;height:14px;position:relative;margin:8px 0 12px}
+.ev b{display:block;font-size:14px;line-height:1.3;font-weight:500}.ev small{color:var(--mute);font-size:12.5px}
+table{border-collapse:collapse;width:100%;font-size:14px}td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.card3d{perspective:1200px;max-width:620px;margin:auto}
+.flip{position:relative;min-height:300px;transition:transform .5s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d;cursor:pointer}
+.flip.on{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;padding:30px;display:flex;flex-direction:column;justify-content:center;gap:10px;background:var(--soft)}
+.face.back{transform:rotateY(180deg);background:var(--btn);color:var(--btnink)}
+.face .big{font-size:21px;font-weight:500;line-height:1.35;letter-spacing:-.01em}
+.face.back p{opacity:.75;margin:0}
+textarea{width:100%;min-height:140px;font:16px/1.55 Newsreader,serif;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
+details summary{list-style:none;cursor:pointer}details summary::-webkit-details-marker{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+.chip{min-height:36px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-size:14px;display:inline-flex;gap:8px;align-items:center}
+.chip.on{background:var(--btn);color:var(--btnink);border-color:var(--btn)}
+.empty{padding:40px;text-align:center;color:var(--mute);background:var(--soft);border-radius:20px}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-size:13px;color:var(--mute)}
+.secs-tog{display:none}
+.tbtn{width:40px;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;flex:none;padding:0}
+.tbtn:hover{background:var(--soft)}.tbtn svg{width:18px;height:18px}
+.tbtn .sun{display:none}:root[data-theme=dark] .tbtn .sun{display:block}:root[data-theme=dark] .tbtn .moon{display:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .tbtn .sun{display:block}:root:not([data-theme=light]) .tbtn .moon{display:none}}
+@media(max-width:700px){.dk{display:none}}
+@media(max-width:860px){.read{grid-template-columns:minmax(0,1fr);gap:24px}.rail{position:static;max-height:none}.secs-tog{display:inline-flex;width:100%}.rail .secs{display:none}.rail.open .secs{display:block}.two{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){
+ body{font-size:15px}
+ .top{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+ .top>div{padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top))}
+ nav{position:fixed;left:0;right:0;bottom:0;z-index:10;border-radius:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 6px max(6px,env(safe-area-inset-bottom));justify-content:space-around;gap:0}
+ nav a{flex:1;justify-content:center;font-size:11.5px;padding:8px 2px;min-height:44px;text-align:center;line-height:1.2}
+ nav a.on{box-shadow:none;background:var(--soft)}
+ main{padding:24px 16px calc(96px + env(safe-area-inset-bottom))}
+ .lec{flex-direction:row;flex-wrap:wrap;align-items:center;min-height:0;padding:16px;gap:6px 12px}
+ .lec .orb{width:32px!important;height:32px!important}
+ .lec h3{flex-basis:100%;font-size:15.5px}.lec .bar{flex-basis:100%;margin-top:4px}
+ .text{font-size:17px}.simple p{font-size:15.5px}
+ .quiz{padding:18px;border-radius:20px}.qq{font-size:17.5px}
+ .opt{font-size:15px;padding:12px 14px}
+ .flip{min-height:340px}.face{padding:22px}.face .big{font-size:19px}
+ .row .btn{flex:1 1 auto}
+ .ev{flex-basis:150px}
+ h1{font-size:30px}
+}
+@media(prefers-reduced-motion:reduce){.flip,.lec{transition:none}}
+</style>
+</head>
+<body>
+<div class="top"><div><a class="brand" href="#home"><span class="orb" style="--g:radial-gradient(circle at 30% 30%,#c7d2fe,#a5b4fc 40%,#fbcfe8)"></span>Transatlantic Relations</a>
+<nav id="nav"><a href="#home">Lectures</a><a href="#timeline">Timeline</a><a href="#cards">Flashcards</a><a href="#exam">Exam<span class="dk"> practice</span></a><a href="#mix">Mixed<span class="dk"> quiz</span></a><a href="#mistakes">Mistakes</a></nav><button class="tbtn" id="theme" aria-label="Switch light/dark mode" title="Switch light/dark mode"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div></div>
+<main id="app"><p class="sub">Loading…</p></main>
+<script>
+{
+const G=['radial-gradient(circle at 30% 30%,#bfdbfe,#93c5fd 45%,#c4b5fd)','radial-gradient(circle at 30% 30%,#bbf7d0,#86efac 45%,#a5f3fc)','radial-gradient(circle at 30% 30%,#fed7aa,#fdba74 45%,#fda4af)','radial-gradient(circle at 30% 30%,#e9d5ff,#c4b5fd 45%,#f9a8d4)','radial-gradient(circle at 30% 30%,#fef08a,#fcd34d 45%,#fdba74)','radial-gradient(circle at 30% 30%,#a5f3fc,#7dd3fc 45%,#a5b4fc)','radial-gradient(circle at 30% 30%,#fecdd3,#fda4af 45%,#d8b4fe)'];
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* Progress: saved to localStorage and mirrored to a 1-year cookie as a backup. */
+const CK='ta_study';
+const readCookie=()=>{try{const m=document.cookie.match(new RegExp('(?:^|; )'+CK+'=([^;]*)'));return m?JSON.parse(decodeURIComponent(m[1])):null}catch(e){return null}};
+let S=null;try{S=JSON.parse(localStorage.getItem('ta-study')||'null')}catch(e){}
+if(!S)S=readCookie()||{};
+S.best=S.best||{};S.miss=S.miss||{};S.read=S.read||{};
+const save=()=>{try{localStorage.setItem('ta-study',JSON.stringify(S))}catch(e){}
+ try{const b={};for(const k in S.best)b[k]=Math.round(S.best[k]*100)/100;const c={best:b,read:S.read,miss:S.miss,last:S.last};let v=encodeURIComponent(JSON.stringify(c));
+  if(v.length>3800){c.read={};v=encodeURIComponent(JSON.stringify(c))}if(v.length>3800){c.miss={};v=encodeURIComponent(JSON.stringify(c))}
+  document.cookie=`${CK}=${v}; max-age=31536000; path=/; SameSite=Lax${location.protocol==='https:'?'; Secure':''}`}catch(e){}
+ const f=$('#saved');if(f)f.textContent='Saved in this browser · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})};
+const root=document.documentElement,mq=matchMedia('(prefers-color-scheme: dark)');
+const curTheme=()=>root.dataset.theme||(mq.matches?'dark':'light');
+const paintMeta=()=>{const m=document.querySelector('meta[name=theme-color]');if(m)m.content=curTheme()==='dark'?'#0c0c0c':'#ffffff'};paintMeta();mq.addEventListener?.('change',paintMeta);
+$('#theme').onclick=()=>{const t=curTheme()==='dark'?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('ta-theme',t)}catch(e){}
+ try{document.cookie=`ta_theme=${t}; max-age=31536000; path=/; SameSite=Lax${location.protocol==='https:'?'; Secure':''}`}catch(e){}paintMeta()};
+let D;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const qid=(sid,i)=>sid+'-'+i;
+const secOf=id=>{for(const L of D.lectures)for(const s of L.sections)if(s.id===id)return[L,s];return[]};
+const lecQs=n=>D.lectures[n-1].sections.flatMap(s=>(D.q[s.id]||[]).map((x,i)=>({x,id:qid(s.id,i),sid:s.id})));
+const allQs=()=>D.lectures.flatMap(L=>lecQs(L.n));
+const orb=(n,sz)=>`<span class="orb" style="--g:${G[n-1]}${sz?`;width:${sz}px;height:${sz}px`:''}"></span>`;
+const steps=(a,hl)=>`<div class="steps">${a.map(([y,t,s],i)=>`<div class="${hl.includes(i)?'hl':''}" style="min-height:${64+i*12}px"><b>${y}</b>${t}${s?`<br>${s}`:''}</div>`).join('')}</div>`;
+
+const VIZ={
+1:()=>`<h4>Three traditions of U.S. foreign policy</h4><div class="fig"><svg viewBox="0 0 640 330" role="img" aria-label="Triangle of Realism, Idealism and Liberalism">
+<polygon points="320,80 100,270 540,270" fill="none" stroke="var(--line)" stroke-width="2"/>
+<circle cx="320" cy="80" r="12" fill="var(--ink)"/><circle cx="100" cy="270" r="12" fill="var(--ink)"/><circle cx="540" cy="270" r="12" fill="var(--ink)"/>
+<text x="320" y="26" text-anchor="middle" fill="var(--ink)" font-weight="600" font-size="19">Realism</text><text x="320" y="48" text-anchor="middle" fill="var(--mute)" font-size="15">power, balance, security → WWs, containment, NATO</text>
+<text x="100" y="236" text-anchor="middle" fill="var(--ink)" font-weight="600" font-size="19">Idealism</text><text x="16" y="318" fill="var(--mute)" font-size="15">values, "city upon a hill" → Wilson</text>
+<text x="540" y="236" text-anchor="middle" fill="var(--ink)" font-weight="600" font-size="19">Liberalism</text><text x="626" y="318" text-anchor="end" fill="var(--mute)" font-size="15">rules, trade → Marshall Plan, UN</text>
+<text x="320" y="196" text-anchor="middle" fill="var(--mute)" font-size="15">Liberalism = values (Idealism)</text><text x="320" y="216" text-anchor="middle" fill="var(--mute)" font-size="15">+ institutions (Realism)</text></svg></div>`,
+2:()=>`<h4>Lundestad — why the U.S. backed integration, least → most important</h4><div class="ladder">${['The American model','A rational, efficient Europe','Reducing the American burden','Containing the Soviet Union','Containing Germany'].map((t,i)=>`<div><span style="font-weight:${i==4?600:400}">${i+1}. ${t}</span><i style="width:${24+i*19}%;opacity:${.2+i*.2}"></i></div>`).join('')}</div>
+<h4 style="margin-top:22px">The U.S. in 1945</h4><div class="cols">${[['⅔','of world industrial production'],['½','of the world\'s wealth'],['No. 1','largest navy'],['A-bomb','atomic monopoly']].map(([a,b])=>`<div class="box"><b style="font-size:24px;letter-spacing:-.02em">${a}</b>${b}</div>`).join('')}</div>`,
+3:()=>`<h4>From isolation to alliance, 1946–1950</h4>${steps([['1946','Long Telegram'],['1947','Truman Doctrine'],['1947','Marshall Plan'],['1947','Dunkirk Treaty'],['1948','Brussels Pact'],['1948','Vandenberg Res.'],['1949','NATO · Art. 5'],['1950','NSC-68']],[6])}`,
+4:()=>`<h4>The German problem in 1945 — who wanted what</h4><div class="two"><div class="cols" style="grid-template-columns:repeat(2,minmax(0,1fr))">${[['France','Security; weak, decentralised Germany; internationalise the Ruhr'],['USSR','Buffer & dominance; reparations; friendly socialist Germany'],['United States','Stability & reconstruction; strong but anchored West'],['Britain','Balance; prevent either hegemon']].map(([a,b])=>`<div class="box"><b>${a}</b>${b}</div>`).join('')}</div>
+<div class="fig"><svg viewBox="0 0 300 260" role="img" aria-label="Schematic of divided Germany with Berlin inside the GDR"><path d="M60 20 L150 12 L160 250 L70 245 L40 150 Z" fill="var(--soft2)"/><path d="M150 12 L255 30 L270 150 L240 240 L160 250 Z" fill="var(--ink)"/><circle cx="215" cy="95" r="17" fill="var(--bg)"/><text x="215" y="99" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--ink)">Berlin</text><text x="100" y="140" text-anchor="middle" fill="var(--ink)" font-weight="600" font-size="16">FRG</text><text x="100" y="158" text-anchor="middle" fill="var(--mute)" font-size="12">May 1949</text><text x="210" y="175" text-anchor="middle" fill="var(--bg)" font-weight="600" font-size="16">GDR</text><text x="210" y="193" text-anchor="middle" fill="var(--bg)" font-size="12" opacity=".7">Oct 1949</text></svg><p class="meta">Schematic. West Berlin sat deep inside the GDR — 2.5m+ fled through it before the Wall (13 Aug 1961).</p></div></div>`,
+5:()=>`<h4>Why European empires fell</h4><div class="cols"><div class="box"><b>Material</b>Exhaustion from WWII · cost of counter-insurgency (Malaya, Kenya, Indochina, Algeria) · trade and finance matter more than territory</div><div class="box"><b>Non-material</b>Anti-colonial nationalism · human-rights norms and the UN · Europeans' own experience of Nazi occupation</div><div class="box"><b>U.S. shift after 1947</b>Idealism → containment: pressured the Dutch in Indonesia, backed France in Indochina. Suez 1956: U.S. vs. UK/France.</div></div>`,
+6:()=>`<h4>Steps of integration — and where the U.S. stood</h4>${steps([['1948','Benelux & OEEC','U.S. requires joint aid'],['1952','ECSC','U.S. endorses'],['1954','EDC fails','France rejects'],['1957','Rome: EEC','U.S. accepts'],['1960','EFTA','UK alternative'],['1963','1st veto','De Gaulle vs UK'],['1967','2nd veto','U.S. frustrated']],[1,3])}`,
+7:()=>`<h4>De Gaulle's step-by-step exit — and NATO's answer</h4>${steps([['1959','Med. fleet out'],['1960','French bomb'],['1963','Atlantic fleet out'],['1964','No Test Ban'],['1966','Leaves integrated command'],['1967','HQ → Brussels · Harmel'],['1969','De Gaulle resigns']],[4])}<p class="meta" style="margin-top:10px">NATO's response: quiet LBJ approach, Defense Planning Committee, Nuclear Planning Group, Harmel Report (deterrence + détente).</p>`
+};
+
+function setNav(h){for(const a of document.querySelectorAll('nav a'))a.classList.toggle('on',a.getAttribute('href')==='#'+h)}
+const stat=sid=>{const b=S.best[sid];return b==null?'':b>=1?'ok':'mid'};
+const foot=()=>`<div class="foot"><span id="saved">Progress saves automatically in this browser.</span><button class="btn ghost" id="reset">Reset progress</button></div>`;
+function bindFoot(){const r=$('#reset');if(!r)return;r.onclick=()=>{if(r.dataset.c){S={best:{},miss:{},read:{}};save();route()}else{r.dataset.c=1;r.textContent='Click again to confirm'}}}
+function home(){setNav('home');
+ const done=Object.keys(S.best).length,tot=D.lectures.reduce((a,L)=>a+L.sections.length,0);const last=S.last?secOf(S.last):[];
+ app.innerHTML=`<h1>Read it, get it,<br>then test yourself.</h1><p class="sub">${tot} sections across seven lectures. Each has the notes, a plain-English explanation and its own quiz — ${allQs().length} questions in total. ${done} of ${tot} sections quizzed so far.</p>
+ ${last[0]?`<a class="resume" href="#${S.last}">${orb(last[0].n,36)}<div><div class="meta">Continue where you left off · Lecture ${last[0].n}</div><b style="font-weight:500">${esc(last[1].title)}</b></div><span style="margin-left:auto" class="btn">Continue</span></a>`:''}
+ <div class="grid">${D.lectures.map(L=>{const q=L.sections.filter(s=>S.best[s.id]!=null).length;return`<a class="lec" href="#L${L.n}">${orb(L.n,44)}<small>Lecture ${L.n}</small><h3>${esc(L.title)}</h3><div class="bar"><i style="width:${q/L.sections.length*100}%"></i></div><small>${q}/${L.sections.length} sections quizzed · ${lecQs(L.n).length} questions</small></a>`}).join('')}</div>
+ <div class="viz" style="margin-top:32px"><h4>Course timeline</h4>${tlHTML()}</div>${foot()}`;bindFoot()}
+function tlHTML(){return`<div class="tl">${D.timeline.map(([y,t,s,l])=>`<a class="ev" href="#L${l}"><div class="y">${y}</div>${orb(l)}<b>${esc(t)}</b><small>${esc(s)} · L${l}</small></a>`).join('')}</div>`}
+function timeline(){setNav('timeline');app.innerHTML=`<h2>Timeline, 1796–1969</h2><p class="sub">Scroll sideways. Each colour is a lecture — tap an event to open it.</p><div class="chips">${D.lectures.map(L=>`<span class="chip">${orb(L.n,12)}Lecture ${L.n}</span>`).join('')}</div><div class="viz">${tlHTML()}</div>
+<h3>Dates to know</h3><table>${D.timeline.map(([y,t,s,l])=>`<tr><td style="font-weight:600;white-space:nowrap;width:70px">${y}</td><td><b style="font-weight:500">${esc(t)}</b><div class="meta">${esc(s)}</div></td><td class="meta" style="white-space:nowrap">L${l}</td></tr>`).join('')}</table>${foot()}`;bindFoot()}
+
+function reader(sid){setNav('home');const[L,s]=secOf(sid);if(!L)return home();
+ const i=L.sections.indexOf(s),prev=L.sections[i-1],next=L.sections[i+1],qs=D.q[sid]||[],x=D.x[sid];
+ S.read[sid]=1;S.last=sid;save();
+ app.innerHTML=`<div class="read"><aside class="rail" id="rail"><div class="lsel">${D.lectures.map(y=>`<a href="#L${y.n}" class="${y.n===L.n?'on':''}" aria-label="Lecture ${y.n}">${y.n}</a>`).join('')}</div>
+ <button class="btn ghost secs-tog" id="tog">Sections (${L.sections.length})</button>
+ <div class="secs">${L.sections.map(y=>`<a href="#${y.id}" class="s ${y.id===sid?'on':''}"><span class="st ${stat(y.id)}"></span><span>${esc(y.title)}</span></a>`).join('')}
+ <div class="row" style="padding:14px 10px"><a class="btn" href="#quiz-L${L.n}">Lecture quiz</a><a class="btn ghost" href="#cards-L${L.n}">Flashcards</a></div></div></aside>
+ <article><div class="crumb">${orb(L.n,14)}Lecture ${L.n} · ${esc(L.title)} · ${i+1}/${L.sections.length}</div>
+ <h2>${esc(s.title)}</h2>
+ ${x?`<div class="simple"><div class="lab">In simple words</div><p>${esc(x[0])}</p><div class="lab">What it means · why it matters</div><p>${esc(x[1])}</p><div class="hook"><span class="meta">Remember</span><span>${esc(x[2])}</span></div></div>`:''}
+ ${i===0?`<div class="viz">${VIZ[L.n]()}</div>`:''}
+ <div class="notes-h">From the study guide</div><div class="text">${s.html}</div>
+ <div class="row" style="margin-top:32px"><button class="btn" id="go">Quiz me on this section · ${qs.length}</button>${prev?`<a class="btn ghost" href="#${prev.id}">← Previous</a>`:''}${next?`<a class="btn ghost" href="#${next.id}">Next →</a>`:`<a class="btn ghost" href="#quiz-L${L.n}">Lecture quiz →</a>`}</div>
+ <div id="qbox"></div>${foot()}</article></div>`;
+ bindFoot();$('#tog').onclick=()=>$('#rail').classList.toggle('open');
+ $('#go').onclick=()=>{quiz($('#qbox'),qs.map((y,j)=>({x:y,id:qid(sid,j),sid})),{sid,next});$('#qbox').scrollIntoView({behavior:'smooth',block:'start'})};
+ window.scrollTo(0,0)}
+
+function quiz(box,items,o={}){items=shuffle(items);let k=0,right=0;const wrong=[];
+ const draw=()=>{if(k>=items.length)return end();const it=items[k],[q,a,...rest]=it.x,opts=shuffle([a,rest[0],rest[1],rest[2]]);const[L,s]=secOf(it.sid);
+  box.innerHTML=`<div class="quiz"><div class="qhead"><span>${k+1} / ${items.length}</span><span>${right} correct</span></div><div class="bar"><i style="width:${k/items.length*100}%"></i></div>
+  ${o.sid?'':`<div class="meta" style="margin-top:14px">Lecture ${L.n} · ${esc(s.title)}</div>`}<p class="qq">${esc(q)}</p><div>${opts.map((t,j)=>`<button class="opt" data-j="${j}"><kbd>${String.fromCharCode(65+j)}</kbd><span>${esc(t)}</span></button>`).join('')}</div><div id="fb"></div></div>`;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const pick=opts[+b.dataset.j],ok=pick===a;
+   box.querySelectorAll('.opt').forEach(y=>{y.disabled=true;if(opts[+y.dataset.j]===a)y.classList.add('right')});
+   if(ok){right++;delete S.miss[it.id]}else{b.classList.add('wrong');wrong.push(it);S.miss[it.id]=1}save();
+   box.querySelector('#fb').innerHTML=`<div class="fb"><b style="font-weight:600;color:var(${ok?'--ok':'--bad'})">${ok?'Correct':'The answer is: '+esc(a)}</b><br>${esc(it.x[5])}${!ok&&!o.sid?` <a href="#${it.sid}">Re-read section</a>`:''}</div><button class="btn" id="nx">${k+1<items.length?'Next question':'See result'}</button>`;
+   const nx=box.querySelector('#nx');nx.onclick=()=>{k++;draw()};nx.focus()})};
+ const end=()=>{const pct=right/items.length;if(o.sid)S.best[o.sid]=Math.max(S.best[o.sid]||0,pct);
+  if(o.lec)for(const s of D.lectures[o.lec-1].sections){const its=items.filter(i=>i.sid===s.id);if(its.length){const r=its.filter(i=>!wrong.includes(i)).length/its.length;S.best[s.id]=Math.max(S.best[s.id]||0,r)}}save();
+  box.innerHTML=`<div class="quiz"><div class="score">${right}/${items.length}</div><p class="qq">${pct===1?'Perfect — this part is locked in.':pct>=.6?'Solid. Review the misses below.':'Worth another read before retrying.'}</p>
+  ${wrong.map(w=>`<div class="fb"><b style="font-weight:500">${esc(w.x[0])}</b><br>✓ ${esc(w.x[1])}<div class="meta" style="margin-top:4px">${esc(w.x[5])}</div></div>`).join('')}
+  <div class="row" style="margin-top:16px"><button class="btn ghost" id="again">Retry</button>${wrong.length?`<button class="btn ghost" id="wr">Retry misses · ${wrong.length}</button>`:''}${o.next?`<a class="btn" href="#${o.next.id}">Next section →</a>`:''}</div></div>`;
+  box.querySelector('#again').onclick=()=>quiz(box,items,o);if(wrong.length)box.querySelector('#wr').onclick=()=>quiz(box,wrong,{...o,sid:null,lec:null});
+  if(o.sid){const d=document.querySelector(`#rail a[href="#${o.sid}"] .st`);if(d)d.className='st '+stat(o.sid)}};
+ draw()}
+
+let sel=new Set(),cnt=20;
+function quizPage(kind,n){setNav(kind==='lec'?'home':kind);let items,title,sub,opt={};
+ if(kind==='lec'){items=lecQs(n);title=`Lecture ${n} quiz`;sub=D.lectures[n-1].title;opt.lec=n}
+ else if(kind==='mix'){const pool=sel.size?allQs().filter(q=>sel.has(+q.sid.match(/L(\d+)/)[1])):allQs();items=shuffle(pool).slice(0,cnt);title='Mixed quiz';sub='Random questions from the lectures you choose.'}
+ else{items=allQs().filter(q=>S.miss[q.id]);title='Mistakes';sub='Questions you last answered wrong. Get one right and it drops off this list.'}
+ app.innerHTML=`<h2>${esc(title)}</h2><p class="sub">${esc(sub)}</p>${kind==='mix'?`<div class="chips" id="lf">${D.lectures.map(L=>`<button class="chip ${sel.has(L.n)?'on':''}" data-n="${L.n}">Lecture ${L.n}</button>`).join('')}<span style="width:10px"></span>${[10,20,40].map(c=>`<button class="chip ${cnt===c?'on':''}" data-c="${c}">${c} questions</button>`).join('')}</div>`:''}<div id="qbox"></div>${foot()}`;bindFoot();
+ if(kind==='mix')$('#lf').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.n){const v=+b.dataset.n;sel.has(v)?sel.delete(v):sel.add(v)}else cnt=+b.dataset.c;quizPage('mix')};
+ if(!items.length){$('#qbox').innerHTML=`<div class="empty">Nothing here yet — answer some questions first.</div>`;return}
+ quiz($('#qbox'),items,opt)}
+
+function cards(n){setNav('cards');let deck=shuffle(lecQs(n)),k=0;
+ const draw=()=>{const it=deck[k];app.innerHTML=`<h2>Flashcards</h2><p class="sub">Tap the card to flip. Arrow keys move between cards.</p><div class="lsel">${D.lectures.map(L=>`<a href="#cards-L${L.n}" class="${L.n===n?'on':''}">${L.n}</a>`).join('')}</div>
+ <div class="card3d"><div class="flip" id="fl" tabindex="0" role="button" aria-label="Flip card"><div class="face"><div class="meta">Lecture ${n} · ${k+1} of ${deck.length}</div><div class="big">${esc(it.x[0])}</div></div><div class="face back"><div class="big">${esc(it.x[1])}</div><p>${esc(it.x[5])}</p></div></div>
+ <div class="row" style="justify-content:center;margin-top:18px"><button class="btn ghost" id="pv">← Prev</button><button class="btn" id="fp">Flip</button><button class="btn ghost" id="nv">Next →</button><a class="btn ghost" href="#${it.sid}">Read section</a></div></div>${foot()}`;bindFoot();
+ const f=$('#fl');f.onclick=$('#fp').onclick=()=>f.classList.toggle('on');f.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();f.classList.toggle('on')}};
+ $('#pv').onclick=()=>{k=(k-1+deck.length)%deck.length;draw()};$('#nv').onclick=()=>{k=(k+1)%deck.length;draw()}};
+ document.onkeydown=e=>{if(!location.hash.startsWith('#cards'))return;if(e.key==='ArrowRight'){k=(k+1)%deck.length;draw()}if(e.key==='ArrowLeft'){k=(k-1+deck.length)%deck.length;draw()}};
+ draw()}
+
+function exam(){setNav('exam');let drafts={};try{drafts=JSON.parse(localStorage.getItem('ta-essays')||'{}')}catch(e){}
+ app.innerHTML=`<h2>Exam practice</h2><p class="sub">Essay-style prompts. Outline your answer, then reveal the points a strong answer should hit. Drafts save in this browser as you type.</p>
+ ${D.lectures.map(L=>D.essays[L.n].map((e,i)=>{const id=`e${L.n}-${i}`;return`<div class="quiz" style="max-width:none;margin-top:14px"><div class="crumb">${orb(L.n,14)}Lecture ${L.n} · ${esc(L.title)}</div><p class="qq">${esc(e[0])}</p><textarea data-id="${id}" placeholder="Outline your answer…">${esc(drafts[id]||'')}</textarea><details style="margin-top:12px"><summary class="btn ghost">Reveal key points</summary><ul class="text" style="font-size:16px">${e[1].map(p=>`<li>${esc(p)}</li>`).join('')}</ul></details></div>`}).join('')).join('')}${foot()}`;bindFoot();
+ app.oninput=e=>{if(e.target.dataset.id){drafts[e.target.dataset.id]=e.target.value;try{localStorage.setItem('ta-essays',JSON.stringify(drafts))}catch(x){}}}}
+
+function route(){app.oninput=null;const h=location.hash.slice(1)||'home';let m;
+ if((m=h.match(/^L(\d)$/)))return reader(`L${m[1]}S1`);
+ if(/^L\d+S\d+$/.test(h))return reader(h);
+ if((m=h.match(/^quiz-L(\d)$/)))return quizPage('lec',+m[1]);
+ if((m=h.match(/^cards(?:-L(\d))?$/)))return cards(m[1]?+m[1]:1);
+ if(h==='timeline')return timeline();if(h==='exam')return exam();if(h==='mix')return quizPage('mix');if(h==='mistakes')return quizPage('mistakes');
+ home();window.scrollTo(0,0)}
+fetch('data.json').then(r=>r.json()).then(d=>{D=d;route();addEventListener('hashchange',route)}).catch(()=>{app.innerHTML='<div class="empty">Could not load the study guide. Reload the page.</div>'});
+}
+</script>
+</body>
+</html>
